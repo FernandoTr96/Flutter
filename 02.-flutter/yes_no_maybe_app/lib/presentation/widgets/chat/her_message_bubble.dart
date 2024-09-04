@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:yes_no_maybe_app/domain/entitites/message.dart';
 
 class HerMessageBubble extends StatelessWidget {
   
-  const HerMessageBubble({super.key});
+  final Message message;
+
+  const HerMessageBubble({super.key, required this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -18,19 +21,26 @@ class HerMessageBubble extends StatelessWidget {
             color: theme.secondary,
             borderRadius: BorderRadius.circular(8)
           ),
-          child: const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-            child: Text('check this ! hehehe'),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+            child: Text(message.text),
           )
         ),
         const SizedBox(height: 10),
-        _ImageBubble()
+        _ImageBubble(url: message.imageUrl!)
       ]
     );
   }
 }
 
 class _ImageBubble extends StatelessWidget {
+
+  final String url;
+
+  const _ImageBubble({
+    required this.url
+  });
+
   @override
   Widget build(BuildContext context) {
 
@@ -42,7 +52,7 @@ class _ImageBubble extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: Image.network(
-        'https://yesno.wtf/assets/no/17-829284e9dd894ce9fb65fbe86d2e382c.gif',
+        url,
         width: imageWidth,
         height: imageHeight,
         fit: BoxFit.fill,
