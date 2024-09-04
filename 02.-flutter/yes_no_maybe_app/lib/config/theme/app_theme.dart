@@ -21,10 +21,10 @@ class AppTheme {
   static ColorScheme get darkThemeSchema {
     return const ColorScheme.dark(
       brightness: Brightness.dark,
-      primary: Colors.indigoAccent,
+      primary: Color.fromARGB(255, 3, 95, 86),
       onPrimary: Color(0xFFFFFFFF),
-      secondary: Color.fromARGB(255, 34, 34, 34),
-      onSecondary: Color.fromARGB(255, 54, 54, 54),
+      secondary: Color.fromARGB(255, 61, 61, 61),
+      onSecondary: Color.fromARGB(255, 190, 190, 190),
       error: Color(0xFFCF6679),
       onError: Color(0xFFFFFFFF),
       surface: Color.fromARGB(255, 37, 37, 37),
@@ -38,6 +38,8 @@ class AppTheme {
 
   // tema de un solo color
   static ThemeData colorTheme(Color color) {
-    return ThemeData(colorSchemeSeed: color);
+    return ThemeData(
+      colorSchemeSeed: color
+    );
   }
 }
