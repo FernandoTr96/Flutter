@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tiktok_app/config/helpers/human_formats.dart';
+import 'package:tiktok_app/shared/helpers/human_formats.dart';
 import 'package:tiktok_app/domain/entities/video_post.dart';
 
 class VideoButtons extends StatelessWidget {
