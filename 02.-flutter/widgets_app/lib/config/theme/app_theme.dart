@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
 
-  const AppTheme();
+  final bool isDarkMode;
 
-  static ThemeData theme(Color color){  
+  const AppTheme({ this.isDarkMode = false });
+
+  ThemeData theme(Color color){  
     return ThemeData(
       colorSchemeSeed: color,
       appBarTheme: const AppBarTheme(
@@ -12,4 +14,19 @@ class AppTheme {
       )
     );
   }
+
+  ThemeData darkMode(){
+    return ThemeData(
+      colorScheme: isDarkMode ? const ColorScheme.dark() : const ColorScheme.light(),
+      appBarTheme: const AppBarTheme(
+        centerTitle: true
+      )
+    );
+  }
+
+  // metodo para copiar clases
+  // se puede acceder en cualquier instancia
+  AppTheme copyWith({bool? isDarkMode}) => AppTheme(
+    isDarkMode: isDarkMode ?? this.isDarkMode
+  );
 }

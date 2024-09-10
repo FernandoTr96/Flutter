@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:widgets_app/config/theme/app_theme.dart';
 import 'package:widgets_app/presentation/providers/counter_provider.dart';
+import 'package:widgets_app/presentation/providers/theme_provider.dart';
 
 // riverpod tiene widgets para manejar su estado
 // ConsumerWidget: te deja observar un provider para renderizar si el estado cambia, si todo lo hace el provider este debe usarse, es equivalente a un stateless
@@ -14,11 +16,21 @@ class CounterScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 
-    final int clickCounter = ref.watch(counterProvider);
+    final clickCounter = ref.watch(counterProvider);
+    final AppTheme themeNotifier = ref.watch(themeNotifierProvider);
+
+    void toggleDarkMode(){
+      ref.read(themeNotifierProvider.notifier).toggleDarkMode();
+    }
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Counter Riverpod'),
+        actions: [
+          themeNotifier.isDarkMode ?
+          IconButton(onPressed: toggleDarkMode, icon: const Icon(Icons.dark_mode)) :
+          IconButton(onPressed: toggleDarkMode, icon: const Icon(Icons.light_mode))
+        ]
       ),
       body: Center(
         child: Text('$clickCounter', style: const TextStyle(fontSize: 100))
