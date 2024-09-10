@@ -65,4 +65,10 @@ const appMenuItems = <MenuItem>[
     link: '/ui-controls', 
     icon: Icons.control_point_sharp
   ),
+  MenuItem(
+    title: 'Counter', 
+    subtitle: 'Contador usando el gestor de estado riverpod', 
+    link: '/counter', 
+    icon: Icons.plus_one
+  ),
 ];
