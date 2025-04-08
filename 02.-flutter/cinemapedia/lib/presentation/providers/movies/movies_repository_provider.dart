@@ -1,8 +1,10 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:cinemapedia/infraestructure/datasources/moviedb_resource_impl.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:cinemapedia/infraestructure/repositories/movie_repository_impl.dart';
+import 'package:cinemapedia/infraestructure/datasources/moviedb_datasource.dart';
 
-final moviesRepositoryProvider = Provider<MovieRepositoryImpl>((ref) {
-  final datasource = MoviedbResourceImpl();
-  return MovieRepositoryImpl(datasource);
-});
+part 'movies_repository_provider.g.dart';
+
+@riverpod
+MovieRepositoryImpl movieRepository (ref) {
+  return MovieRepositoryImpl(MoviedbDatasource());
+}

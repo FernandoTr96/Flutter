@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:cinemapedia/config/const/env.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:cinemapedia/presentation/widgets/index.dart';
+import 'package:cinemapedia/presentation/providers/movies/movies_providers.dart';
 
 class HomeScreen extends StatelessWidget {
 
@@ -9,8 +11,40 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text(Env.moviedbKey)
+    return const Scaffold(
+      body: HomeView()
+    );
+  }
+}
+
+class HomeView extends ConsumerStatefulWidget {
+  
+  const HomeView({
+    super.key,
+  });
+
+  @override
+  HomeViewState createState() => HomeViewState();
+}
+
+class HomeViewState extends ConsumerState<HomeView> {
+
+  @override
+  void initState() {
+    super.initState();
+    ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+  }
+  
+  @override
+  Widget build(BuildContext context) {
+
+    final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
+
+    return Column(
+      children: [
+        const CustomAppBar(),
+        MoviesSlideShow(movies: nowPlayingMovies)
+      ]
     );
   }
 }
