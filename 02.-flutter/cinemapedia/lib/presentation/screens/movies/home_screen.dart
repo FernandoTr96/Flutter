@@ -1,3 +1,5 @@
+import 'package:cinemapedia/presentation/providers/movies/initial_loading_provider.dart';
+import 'package:cinemapedia/presentation/widgets/shared/full_screen_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cinemapedia/presentation/widgets/index.dart';
@@ -31,13 +33,22 @@ class HomeViewState extends ConsumerState<HomeView> {
   void initState() {
     super.initState();
     ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+    ref.read(popularMoviesProvider.notifier).loadNextPage();
+    ref.read(topRatedMoviesProvider.notifier).loadNextPage();
+    ref.read(upcomingMoviesProvider.notifier).loadNextPage();
   }
 
   @override
   Widget build(BuildContext context) {
     
+    final initialLoading = ref.watch(initialLoadingProvider);
+    if(initialLoading) return const FullScreenLoader();
+
     final slideShowMovies = ref.watch(moviesSlideShowProvider);
     final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
+    final popularMovies = ref.watch(popularMoviesProvider);
+    final topRatedMovies = ref.watch(topRatedMoviesProvider);
+    final upcomingMovies = ref.watch(upcomingMoviesProvider);
 
     return CustomScrollView(
       slivers: [
@@ -61,16 +72,22 @@ class HomeViewState extends ConsumerState<HomeView> {
                     loadNextPage: ref.read(nowPlayingMoviesProvider.notifier).loadNextPage
                   ),
                   MovieHorizontalListview(
-                    title: 'Comming son',
-                    subtitle: 'In a moth',
-                    movies: nowPlayingMovies,
-                    loadNextPage: ref.read(nowPlayingMoviesProvider.notifier).loadNextPage
+                    title: 'Popular movies',
+                    subtitle: 'trending',
+                    movies: popularMovies,
+                    loadNextPage: ref.read(popularMoviesProvider.notifier).loadNextPage
                   ),
                   MovieHorizontalListview(
-                    title: 'Popular',
-                    subtitle: 'This year',
-                    movies: nowPlayingMovies,
-                    loadNextPage: ref.read(nowPlayingMoviesProvider.notifier).loadNextPage
+                    title: 'Top rated movies',
+                    subtitle: 'The best',
+                    movies: topRatedMovies,
+                    loadNextPage: ref.read(topRatedMoviesProvider.notifier).loadNextPage
+                  ),
+                  MovieHorizontalListview(
+                    title: 'Upcoming movies',
+                    subtitle: 'soon',
+                    movies: upcomingMovies,
+                    loadNextPage: ref.read(upcomingMoviesProvider.notifier).loadNextPage
                   ),
                   const SizedBox(height: 15)
                 ]

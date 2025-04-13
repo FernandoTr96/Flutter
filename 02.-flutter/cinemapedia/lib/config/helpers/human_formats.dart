@@ -9,6 +9,6 @@ class HumanFormats {
       locale: 'en'
     ).format(number);
     return formatedNumber;
-  }
+  } 
 
 }
