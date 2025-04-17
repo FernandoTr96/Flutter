@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
-import 'package:cinemapedia/config/helpers/human_formats.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
+import 'package:cinemapedia/config/helpers/human_formats.dart';
+import 'package:cinemapedia/presentation/screens/screens.dart';
+import 'package:cinemapedia/presentation/providers/providers.dart';
 
 class MovieHorizontalListview extends StatefulWidget {
 
@@ -65,7 +68,7 @@ class _MovieHorizontalListviewState extends State<MovieHorizontalListview> {
   }
 }
 
-class _Slide extends StatelessWidget {
+class _Slide extends ConsumerWidget {
 
   final Movie movie;
 
@@ -74,8 +77,9 @@ class _Slide extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     
+    final router = ref.watch(routerProvider);
     final textStyles = Theme.of(context).textTheme;
 
     return Container(
@@ -88,16 +92,21 @@ class _Slide extends StatelessWidget {
                 width: 150,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
-                  child: Image.network(
-                    movie.posterPath,
-                    fit: BoxFit.cover,
-                    width: 150,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if(loadingProgress != null){
-                       return const Padding(padding: EdgeInsets.all(0.8), child: Center(child: CircularProgressIndicator(strokeAlign: 2)));
+                  child: GestureDetector(
+                    onTap: ()=> router.pushNamed(MovieScreen.name, pathParameters: {
+                      'id': movie.id.toString()
+                    }),
+                      child: Image.network(
+                      movie.posterPath,
+                      fit: BoxFit.cover,
+                      width: 150,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if(loadingProgress != null){
+                         return const Padding(padding: EdgeInsets.all(0.8), child: Center(child: CircularProgressIndicator(strokeAlign: 2)));
+                        }
+                        return FadeIn(child: child);
                       }
-                      return FadeIn(child: child);
-                    }
+                    ),
                   )
                 )
               ),
