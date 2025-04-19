@@ -77,5 +77,19 @@ class MoviedbDatasource implements MoviesDatasource {
     final movie = MovieMapper.movieDetailsToEntity(movieDetails);
     return movie;
   }
+  
+  @override
+  Future<List<Movie>> searchMovies(String query) async {
+    
+    final response = await dio.get('/search/movie', queryParameters: {'query': query});
+    final movieDBResponse = MovieDbResponse.fromJson(response.data);
+
+    final List<Movie> movies = movieDBResponse.results
+    .where((moviedb) => moviedb.posterPath != 'no-poster')
+    .map((moviedb) => MovieMapper.movieToEntity(moviedb))
+    .toList();
+
+    return movies;
+  }
 
 }
