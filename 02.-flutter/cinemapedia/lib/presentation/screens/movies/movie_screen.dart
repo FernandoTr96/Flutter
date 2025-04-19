@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:cinemapedia/presentation/providers/actors/list_actors_provider.dart';
 import 'package:cinemapedia/presentation/providers/movies/movie_info_provider.dart';
 
 class MovieScreen extends ConsumerStatefulWidget {
@@ -32,7 +33,8 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
       body: CustomScrollView(
         slivers: [
           _CustomSliverAppBar(movie: movie),
-          SliverList(delegate: SliverChildBuilderDelegate((context, index) => _MovieDescription(movie: movie), childCount: 1))
+          SliverList(delegate: SliverChildBuilderDelegate((context, index) => _MovieDescription(movie: movie), childCount: 1)),
+          SliverList(delegate: SliverChildBuilderDelegate((context, index) => _MovieActors(movieId: movie.id), childCount: 1))
         ]
       )
     );
@@ -168,3 +170,59 @@ class _MovieDescription extends StatelessWidget {
   }
 }
 
+class _MovieActors extends ConsumerStatefulWidget {
+
+  final int movieId;
+  const _MovieActors({required this.movieId});
+
+  @override
+  _MovieActorsState createState() => _MovieActorsState();
+}
+
+class _MovieActorsState extends ConsumerState<_MovieActors> {
+
+  @override
+  void initState() {
+    super.initState();
+    ref.read(listActorsProvider.notifier).loadActors(widget.movieId);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    final colors = Theme.of(context).colorScheme;
+    final actorsCache = ref.watch(listActorsProvider);
+    final actors = actorsCache[widget.movieId];
+
+    if(actors == null) return const Center(child: CircularProgressIndicator(strokeWidth: 2));
+
+    return SizedBox(
+      height: 300,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: actors.length,
+        itemBuilder: (context, index) {
+          final actor = actors[index];
+          return Container(
+            margin: const EdgeInsets.all(8),
+            child: Column(
+              children: [
+                SizedBox(
+                  width: 120,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      ClipRRect(borderRadius: BorderRadius.circular(5), child: Image.network(actor.photography)),
+                      Text(actor.name, maxLines: 1, overflow: TextOverflow.ellipsis),
+                      Text(actor.characterName, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: FontWeight.bold, color: colors.secondary))
+                    ]
+                  )
+                )
+              ]
+            )
+          );
+        }
+      )
+    );
+  }
+}

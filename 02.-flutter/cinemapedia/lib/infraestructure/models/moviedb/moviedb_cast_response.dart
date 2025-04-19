@@ -47,7 +47,7 @@ class Cast {
   final String name;
   final String originalName;
   final double popularity;
-  final String profilePath;
+  final String? profilePath;
   final int castId;
   final String character;
   final String creditId;
@@ -114,12 +114,12 @@ class Cast {
         originalName: json["original_name"],
         popularity: json["popularity"].toDouble(),
         profilePath: json["profile_path"],
-        castId: json["cast_id"],
-        character: json["character"],
+        castId: json["cast_id"] ?? 0,
+        character: json["character"] ?? 'uknown',
         creditId: json["credit_id"],
-        order: json["order"],
-        department: json["department"],
-        job: json["job"],
+        order: json["order"] ?? 0,
+        department: json["department"] ?? 'uknown',
+        job: json["job"] ?? 'uknown',
       );
 
   Map<String, dynamic> toJson() => {
