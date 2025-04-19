@@ -1,19 +1,22 @@
-import 'package:cinemapedia/infraestructure/models/moviedb/moviedb_details.dart';
+import 'package:cinemapedia/infraestructure/mappers/actor_mapper.dart';
 import 'package:dio/dio.dart';
 import 'package:cinemapedia/config/const/env.dart';
+import 'package:cinemapedia/domain/entities/actor.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:cinemapedia/domain/datasources/movies_datasource.dart';
 import 'package:cinemapedia/infraestructure/mappers/movie_mapper.dart';
+import 'package:cinemapedia/infraestructure/models/moviedb/moviedb_details.dart';
 import 'package:cinemapedia/infraestructure/models/moviedb/moviedb_response.dart';
+import 'package:cinemapedia/infraestructure/models/moviedb/moviedb_cast_response.dart';
 
 class MoviedbDatasource implements MoviesDatasource {
   
   final dio = Dio(
     BaseOptions(
-      baseUrl: 'https://api.themoviedb.org/3',
+      baseUrl: Env.moviedbUrl,
       queryParameters: {
         'api_key': Env.moviedbKey,
-        'language': 'es-MX'
+        'language': Env.moviedbLanguage
       }
     )
   );
@@ -27,7 +30,7 @@ class MoviedbDatasource implements MoviesDatasource {
     final List<Movie> movies = movieDBResponse.results
     .where((moviedb) => moviedb.posterPath != 'no-poster' )
     .map(
-      (moviedb) => MovieMapper.movieDBToEntity(moviedb)
+      (moviedb) => MovieMapper.movieToEntity(moviedb)
     ).toList();
 
     return movies;
@@ -42,7 +45,7 @@ class MoviedbDatasource implements MoviesDatasource {
     final List<Movie> movies = movieDBResponse.results
     .where((moviedb) => moviedb.posterPath != 'no-poster' )
     .map(
-      (moviedb) => MovieMapper.movieDBToEntity(moviedb)
+      (moviedb) => MovieMapper.movieToEntity(moviedb)
     ).toList();
 
     return movies;
@@ -57,7 +60,7 @@ class MoviedbDatasource implements MoviesDatasource {
     final List<Movie> movies = movieDBResponse.results
     .where((moviedb) => moviedb.posterPath != 'no-poster' )
     .map(
-      (moviedb) => MovieMapper.movieDBToEntity(moviedb)
+      (moviedb) => MovieMapper.movieToEntity(moviedb)
     ).toList();
 
     return movies;
@@ -72,7 +75,7 @@ class MoviedbDatasource implements MoviesDatasource {
     final List<Movie> movies = movieDBResponse.results
     .where((moviedb) => moviedb.posterPath != 'no-poster' )
     .map(
-      (moviedb) => MovieMapper.movieDBToEntity(moviedb)
+      (moviedb) => MovieMapper.movieToEntity(moviedb)
     ).toList();
 
     return movies;
@@ -82,9 +85,17 @@ class MoviedbDatasource implements MoviesDatasource {
   Future<Movie> getMovie(String id) async {
     final response = await dio.get('/movie/$id');
     if(response.statusCode != 200) throw Exception('Movie with id: $id not found');
-    final moviedbDetails = MoviedbDetails.fromJson(response.data);
-    final movie = MovieMapper.movieDetailsToEntity(moviedbDetails);
+    final movieDetails = MoviedbDetails.fromJson(response.data);
+    final movie = MovieMapper.movieDetailsToEntity(movieDetails);
     return movie;
+  }
+
+  @override
+  Future<List<Actor>> getActors(String movieId) async {
+    final response = await dio.get('/movie/$movieId/credits');
+    final movieInfo = MoviedbCastResponse.fromJson(response.data);
+    final List<Actor> actors = movieInfo.cast.map((castElement)=> ActorMapper.castToEntity(castElement)).toList();
+    return actors;
   }
 
 }
