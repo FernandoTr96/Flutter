@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
+import 'package:cinemapedia/presentation/providers/providers.dart';
+import 'package:cinemapedia/presentation/screens/movies/movie_screen.dart';
 
 // definir tipo de parametro para la peticion http
 typedef SearchMovieCallback = Future<List<Movie>> Function(String query);
@@ -52,7 +55,7 @@ class SearchMovieDelegate extends SearchDelegate<Movie?>{
           itemCount: movies.length,
           itemBuilder: (context, index) {
             final movie = movies[index];
-            return _MovieSuggestion(movie: movie);
+            return _MovieSuggestion(movie: movie, closeCallback: close);
           }
         );
       }
@@ -60,24 +63,31 @@ class SearchMovieDelegate extends SearchDelegate<Movie?>{
   }
 }
 
-class _MovieSuggestion extends StatelessWidget {
+class _MovieSuggestion extends ConsumerWidget {
   
+  final Movie movie;
+  final void Function(BuildContext, Movie?) closeCallback;
+
   const _MovieSuggestion({
     required this.movie,
+    required this.closeCallback
   });
 
-  final Movie movie;
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
 
     final colors = Theme.of(context).colorScheme;
     final textStyles = Theme.of(context).textTheme;
+    final router = ref.watch(routerProvider);
 
     return ListTile(
       leading: Image.network(movie.posterPath),
       title: Text(movie.title, style: textStyles.titleSmall),
-      subtitle: Text(movie.overview, maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(color: colors.secondary))
+      subtitle: Text(movie.overview, maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(color: colors.secondary)),
+      onTap: () {
+        closeCallback(context, null);
+        router.pushNamed(MovieScreen.name, pathParameters: {'id': movie.id.toString()});
+      }
     );
   }
 }
