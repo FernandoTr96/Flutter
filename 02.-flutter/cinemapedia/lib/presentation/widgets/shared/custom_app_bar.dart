@@ -1,7 +1,10 @@
-import 'package:cinemapedia/presentation/providers/providers.dart';
+import 'package:cinemapedia/domain/entities/movie.dart';
+import 'package:cinemapedia/presentation/providers/search/search_movies_providers.dart';
 import 'package:flutter/material.dart';
-import 'package:cinemapedia/presentation/delegates/search_movie_delegate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:cinemapedia/presentation/screens/screens.dart';
+import 'package:cinemapedia/presentation/providers/providers.dart';
+import 'package:cinemapedia/presentation/delegates/search_movie_delegate.dart';
 
 class CustomAppBar extends ConsumerWidget {
   
@@ -10,6 +13,8 @@ class CustomAppBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     
+    // router
+    final router = ref.watch(routerProvider);
     // Los colores siempre deben venir del tema
     final colors = Theme.of(context).colorScheme;
     // Valor de titulos
@@ -29,16 +34,20 @@ class CustomAppBar extends ConsumerWidget {
             Text('Cinemapedia', style: titleStyle),
             const Spacer(),
             IconButton(
+              icon: const Icon(Icons.search),
               onPressed: (){
-                final searchMoviesCallback = ref.read(movieRepositoryProvider).searchMovies;
-                showSearch(
+                showSearch<Movie?>(
+                  query: ref.read(lastMovieQueryProvider),
                   context: context, 
                   delegate: SearchMovieDelegate(
-                    searchCallback: searchMoviesCallback
+                    lastSearchData: ref.read(searchedMoviesProvider),
+                    searchCallback: ref.read(searchedMoviesProvider.notifier).searchMoviesByQuery
                   )
-                );
-              }, 
-              icon: const Icon(Icons.search)
+                ).then((movie){
+                  if(movie == null) return;
+                  router.pushNamed(MovieScreen.name, pathParameters: {'id': movie.id.toString()});
+                });
+              }
             )
           ]
         )

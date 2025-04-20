@@ -17,8 +17,8 @@ class MovieMapper {
       popularity: moviedb.popularity,
       posterPath: (moviedb.posterPath != '')
           ? '${Env.moviedbImgs}${moviedb.posterPath}'
-          : 'no-poster',
-      releaseDate: moviedb.releaseDate,
+          : 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/640px-No-Image-Placeholder.svg.png',
+      releaseDate: moviedb.releaseDate != null ? moviedb.releaseDate! : DateTime.now(),
       title: moviedb.title,
       video: moviedb.video,
       voteAverage: moviedb.voteAverage,
@@ -38,7 +38,7 @@ class MovieMapper {
       popularity: details.popularity,
       posterPath: (details.posterPath != '')
           ? '${Env.moviedbImgs}${details.posterPath}'
-          : 'no-poster',
+          : 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/640px-No-Image-Placeholder.svg.png',
       releaseDate: details.releaseDate,
       title: details.title,
       video: details.video,
