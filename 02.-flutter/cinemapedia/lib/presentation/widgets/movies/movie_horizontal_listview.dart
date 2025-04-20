@@ -93,9 +93,7 @@ class _Slide extends ConsumerWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
                   child: GestureDetector(
-                    onTap: ()=> router.pushNamed(MovieScreen.name, pathParameters: {
-                      'id': movie.id.toString()
-                    }),
+                    onTap: ()=> router.push('/home/0/movie/${movie.id}'),
                       child: Image.network(
                       movie.posterPath,
                       fit: BoxFit.cover,
